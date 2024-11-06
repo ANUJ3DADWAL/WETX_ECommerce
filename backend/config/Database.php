@@ -1,0 +1,3 @@
+<?php
+echo "Database Configuration";
+?>
