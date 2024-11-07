@@ -27,7 +27,7 @@ class ProductController extends BaseController {
         $stmt->bindParam(':stock_quantity', $data['stock_quantity']);
         $stmt->bindParam(':description', $data['description']);
         $stmt->bindParam(':image_url', $data['image_url']);
-        
+
         if ($stmt->execute()) {
             $productId = $this->conn->lastInsertId();
             $product = $this->getProduct($productId);
@@ -35,15 +35,23 @@ class ProductController extends BaseController {
             $this->sendResponse([
                 'message' => 'Product created successfully',
                 'product' => $product->getProductDetails(),
-                
+
             ], 201);
-        
+
         } else {
             $this->sendError('Failed to create product');
         }
     }
 
-    public function getProduct(int $id, bool $send=false): ?Product{
+    public function getAllProducts(): void {
+        $query = 'SELECT * FROM ' . Product::getTableName();
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->sendResponse($products);
+    }
+
+    public function getProduct(int $id, bool $send = false): ?Product {
         $query = 'SELECT * FROM ' . Product::getTableName() . ' WHERE product_id = :product_id';
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':product_id', $id);
@@ -55,10 +63,9 @@ class ProductController extends BaseController {
             } else {
                 $this->sendError('Product not found', 404);
             }
-        } else {
-            
-            return new Product($product);
         }
+
+        return new Product($product);
     }
 
     public function updateProduct(int $id): void {
