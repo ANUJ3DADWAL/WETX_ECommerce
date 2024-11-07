@@ -17,7 +17,8 @@ class ProductController extends BaseController {
         $data = json_decode(file_get_contents("php://input"), true);
         $query = 'INSERT INTO ' . Product::getTableName() . ' (category_id, product_name, price, stock_quantity, description, image_url) VALUES (:category_id, :product_name, :price, :stock_quantity, :description, :image_url)';
 
-        $category_id = $this->categoryController->getCategoryByName($data['category_name']);
+        $category = $this->categoryController->getCategoryByName($data['category_name']);
+        $category_id = $category->getCategoryId();
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':category_id', $category_id);
@@ -28,24 +29,41 @@ class ProductController extends BaseController {
         $stmt->bindParam(':image_url', $data['image_url']);
         
         if ($stmt->execute()) {
-            $this->sendResponse(['message' => 'Product created successfully']);
+            $productId = $this->conn->lastInsertId();
+            $product = $this->getProduct($productId);
+
+            $this->sendResponse([
+                'message' => 'Product created successfully',
+                'product' => $product->getProductDetails(),
+                
+            ], 201);
+        
         } else {
             $this->sendError('Failed to create product');
         }
     }
 
-    public function getProduct(int $id): void {
-        $query = 'SELECT * FROM Product WHERE product_id = :product_id';
+    public function getProduct(int $id, bool $send=false): ?Product{
+        $query = 'SELECT * FROM ' . Product::getTableName() . ' WHERE product_id = :product_id';
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':product_id', $id);
         $stmt->execute();
         $product = $stmt->fetch(PDO::FETCH_ASSOC);
-        $this->sendResponse($product);
+        if ($send) {
+            if ($product) {
+                $this->sendResponse($product);
+            } else {
+                $this->sendError('Product not found', 404);
+            }
+        } else {
+            
+            return new Product($product);
+        }
     }
 
     public function updateProduct(int $id): void {
         $data = json_decode(file_get_contents("php://input"), true);
-        $query = 'UPDATE Product SET category_id = :category_id, product_name = :product_name, price = :price, stock_quantity = :stock_quantity, description = :description, image_url = :image_url WHERE product_id = :product_id';
+        $query = 'UPDATE ' . Product::getTableName() . ' SET category_id = :category_id, product_name = :product_name, price = :price, stock_quantity = :stock_quantity, description = :description, image_url = :image_url WHERE product_id = :product_id';
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':category_id', $data['category_id']);
         $stmt->bindParam(':product_name', $data['product_name']);
@@ -61,8 +79,20 @@ class ProductController extends BaseController {
         }
     }
 
-    public function deleteProduct(int $id): void {
-        $query = 'DELETE FROM Product WHERE product_id = :product_id';
+    public function deleteProduct(): void {
+        $data = json_decode(file_get_contents("php://input"), true);
+        $id = $data['productId'];
+
+        if (empty($id)) {
+            $this->sendError('Product id is required');
+        }
+
+        $product = $this->getProduct($id);
+        if (empty($product)) {
+            $this->sendError('Product not found', 404);
+        }
+
+        $query = 'DELETE FROM ' . Product::getTableName() . ' WHERE product_id = :product_id';
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':product_id', $id);
         if ($stmt->execute()) {

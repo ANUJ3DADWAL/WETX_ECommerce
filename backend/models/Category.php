@@ -10,7 +10,9 @@ class Category {
 
     // Constructor
     public function __construct(array $data) {
+        $this->category_id = $data['category_id'];
         $this->category_name = $data['category_name'];
+        $this->created_at = $data['created_at'];
     }
 
     public static function getTableName(): string {

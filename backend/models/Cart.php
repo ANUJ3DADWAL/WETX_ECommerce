@@ -1,5 +1,7 @@
 <?php
 class Cart {
+    private const TABLE = 'carts';
+
     private int $cart_id;
     private int $user_id;
     private int $product_id;
@@ -12,7 +14,9 @@ class Cart {
         $this->product_id = $product_id;
         $this->quantity = $quantity;
     }
-
+    public static function getTableName(): string {
+        return self::TABLE;
+    }
     // Getters and Setters
     public function getCartId(): int {
         return $this->cart_id;

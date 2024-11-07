@@ -38,10 +38,10 @@ class CategoryController extends BaseController {
         return new Category($category);
     }
 
-    public function getCategoryByName(int $name): ?Category {
+    public function getCategoryByName(string $name): ?Category {
         $query = 'SELECT * FROM ' . Category::getTableName() . ' WHERE category_name = :category_name';
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':category_name', $id);
+        $stmt->bindParam(':category_name', $name);
         $stmt->execute();
         $category = $stmt->fetch(PDO::FETCH_ASSOC);
 
