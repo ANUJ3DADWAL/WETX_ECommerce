@@ -1,6 +1,8 @@
 <?php
 
 class Product {
+    private const TABLE = 'products';
+
     private int $product_id;
     private int $category_id;
     private string $product_name;
@@ -11,13 +13,41 @@ class Product {
     private string $created_at;
 
     // Constructor
-    public function __construct(int $category_id, string $product_name, float $price, int $stock_quantity, ?string $description = null, ?string $image_url = null) {
-        $this->category_id = $category_id;
-        $this->product_name = $product_name;
-        $this->price = $price;
-        $this->stock_quantity = $stock_quantity;
-        $this->description = $description;
-        $this->image_url = $image_url;
+//    public function __construct(int $category_id, string $product_name, float $price, int $stock_quantity, ?string $description = null, ?string $image_url = null) {
+//        $this->category_id = $category_id;
+//        $this->product_name = $product_name;
+//        $this->price = $price;
+//        $this->stock_quantity = $stock_quantity;
+//        $this->description = $description;
+//        $this->image_url = $image_url;
+//    }
+
+    public function __construct(array $data) {
+        $this->product_id = $data['product_id'];
+        $this->category_id = $data['category_id'];
+        $this->product_name = $data['product_name'];
+        $this->description = $data['description'] ?? null;
+        $this->price = $data['price'];
+        $this->stock_quantity = $data['stock_quantity'];
+        $this->image_url = $data['image_url'] ?? null;
+        $this->created_at = $data['created_at'];
+    }
+
+    public static function getTableName(): string {
+        return self::TABLE;
+    }
+
+    public function getProductDetails(): array {
+        return [
+            'product_id' => $this->getProductId(),
+            'category_id' => $this->getCategoryId(),
+            'product_name' => $this->getProductName(),
+            'description' => $this->getDescription(),
+            'price' => $this->getPrice(),
+            'stock_quantity' => $this->getStockQuantity(),
+            'image_url' => $this->getImageUrl(),
+            'created_at' => $this->getCreatedAt(),
+        ];
     }
 
     // Getters and Setters

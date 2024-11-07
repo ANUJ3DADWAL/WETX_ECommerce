@@ -1,13 +1,28 @@
 <?php
 
 class Category {
+
+    private const TABLE = 'categories';
+
     private int $category_id;
     private string $category_name;
     private string $created_at;
 
     // Constructor
-    public function __construct(string $category_name) {
-        $this->category_name = $category_name;
+    public function __construct(array $data) {
+        $this->category_name = $data['category_name'];
+    }
+
+    public static function getTableName(): string {
+        return self::TABLE;
+    }
+
+    public function getCategoryDetails(): array {
+        return [
+            'category_id' => $this->getCategoryId(),
+            'category_name' => $this->getCategoryName(),
+            'created_at' => $this->getCreatedAt(),
+        ];
     }
 
     // Getters and Setters

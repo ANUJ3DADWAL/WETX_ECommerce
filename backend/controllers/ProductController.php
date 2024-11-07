@@ -5,22 +5,28 @@ require_once __DIR__ . '/../config/Database.php';
 
 class ProductController extends BaseController {
     private PDO $conn;
+    private CategoryController $categoryController;
 
     public function __construct() {
         $database = new Database();
         $this->conn = $database->connect();
+        $this->categoryController = new CategoryController();
     }
 
     public function createProduct(): void {
         $data = json_decode(file_get_contents("php://input"), true);
-        $query = 'INSERT INTO Product (category_id, product_name, price, stock_quantity, description, image_url) VALUES (:category_id, :product_name, :price, :stock_quantity, :description, :image_url)';
+        $query = 'INSERT INTO ' . Product::getTableName() . ' (category_id, product_name, price, stock_quantity, description, image_url) VALUES (:category_id, :product_name, :price, :stock_quantity, :description, :image_url)';
+
+        $category_id = $this->categoryController->getCategoryByName($data['category_name']);
+
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':category_id', $data['category_id']);
+        $stmt->bindParam(':category_id', $category_id);
         $stmt->bindParam(':product_name', $data['product_name']);
         $stmt->bindParam(':price', $data['price']);
         $stmt->bindParam(':stock_quantity', $data['stock_quantity']);
         $stmt->bindParam(':description', $data['description']);
         $stmt->bindParam(':image_url', $data['image_url']);
+        
         if ($stmt->execute()) {
             $this->sendResponse(['message' => 'Product created successfully']);
         } else {
@@ -66,4 +72,5 @@ class ProductController extends BaseController {
         }
     }
 }
+
 ?>

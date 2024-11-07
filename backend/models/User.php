@@ -1,8 +1,7 @@
 <?php
 
-
 class User {
-    public static const TABLE = 'users';
+    private const TABLE = 'users';
 
     private int $user_id;
     private string $password;
@@ -16,20 +15,54 @@ class User {
     private string $created_at;
 
     // Constructor
-    public function __construct(string $password, string $email, ?string $first_name = null, ?string $last_name = null, ?string $phone_number = null, ?string $base_address = null, ?string $city = null, ?string $state = null) {
-        $this->password = $password;
-        $this->email = $email;
-        $this->first_name = $first_name;
-        $this->last_name = $last_name;
-        $this->phone_number = $phone_number;
-        $this->base_address = $base_address;
-        $this->city = $city;
-        $this->state = $state;
+//    public function __construct(string $password, string $email, ?string $first_name = null, ?string $last_name = null, ?string $phone_number = null, ?string $base_address = null, ?string $city = null, ?string $state = null) {
+//        $this->password = $password;
+//        $this->email = $email;
+//        $this->first_name = $first_name;
+//        $this->last_name = $last_name;
+//        $this->phone_number = $phone_number;
+//        $this->base_address = $base_address;
+//        $this->city = $city;
+//        $this->state = $state;
+//    }
+    public function __construct(array $data) {
+        $this->user_id = $data['user_id'];
+        $this->password = $data['password'];
+        $this->email = $data['email'];
+        $this->first_name = $data['first_name'] ?? null;
+        $this->last_name = $data['last_name'] ?? null;
+        $this->phone_number = $data['phone_number'] ?? null;
+        $this->base_address = $data['base_address'] ?? null;
+        $this->city = $data['city'] ?? null;
+        $this->state = $data['state'] ?? null;
+        $this->created_at = $data['created_at'];
+    }
+
+    public static function getTableName(): string {
+        return self::TABLE;
+    }
+
+    public function getUserDetails(): array {
+        return [
+            'user_id' => $this->getUserId(),
+            'email' => $this->getEmail(),
+            'first_name' => $this->getFirstName(),
+            'last_name' => $this->getLastName(),
+            'phone_number' => $this->getPhoneNumber(),
+            'base_address' => $this->getBaseAddress(),
+            'city' => $this->getCity(),
+            'state' => $this->getState(),
+            'created_at' => $this->getCreatedAt(),
+        ];
     }
 
     // Getters and Setters
     public function getUserId(): int {
         return $this->user_id;
+    }
+
+    public function setUserId(int $user_id): void {
+        $this->user_id = $user_id;
     }
 
     public function getPassword(): string {
@@ -98,6 +131,10 @@ class User {
 
     public function getCreatedAt(): string {
         return $this->created_at;
+    }
+
+    public function setCreatedAt(string $created_at): void {
+        $this->created_at = $created_at;
     }
 }
 ?>
