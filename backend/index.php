@@ -70,9 +70,14 @@ $dotenv->load();
 
 // Routing
 if (class_exists($controllerName) && method_exists($controllerName, $methodName)) {
+    if ($request_method == 'OPTIONS') {
+        header("HTTP/1.1 200 OK");
+        exit();
+    }
+
     $controller = new $controllerName();
     if ($id) {
-        $controller->$methodName($id);
+        $controller->$methodName($id, true);
     } else {
         $controller->$methodName();
     }

@@ -31,16 +31,25 @@ class CartController extends BaseController {
 
     public function updateQuantity(): void {
         $data = json_decode(file_get_contents("php://input"), true);
-        if (!isset($data['quantity'])) {
-            $this->sendError('Quantity is required');
+        $user_id = $data['user_id'];
+        $product_id = $data['product_id'];
+        $quantity = $data['quantity'];
+
+        if (empty($user_id) || empty($product_id) || empty($quantity)) {
+            $this->sendError('User ID, Product ID and Quantity all are required');
+            return;
         }
+
         if ($data['quantity'] <= 0) {
             $this->sendError('Quantity must be greater than 0');
         }
-        $query = 'UPDATE ' . Cart::getTableName() . ' SET quantity = :quantity WHERE cart_id = :cart_id';
+
+        $query = 'UPDATE ' . Cart::getTableName() . ' SET quantity = :quantity user_id = :user_id AND product_id = :product_id';
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':quantity', $data['quantity']);
-        $stmt->bindParam(':cart_id', $data['cart_id']);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->bindParam(':product_id', $product_id);
+        $stmt->bindParam(':quantity', $quantity);
+        
         if ($stmt->execute()) {
             $this->sendResponse(['message' => 'Cart quantity updated successfully']);
         } else {
@@ -53,17 +62,17 @@ class CartController extends BaseController {
         $data = json_decode(file_get_contents("php://input"), true);
         $user_id = $data['user_id'];
         $product_id = $data['product_id'];
-    
+
         if (empty($user_id) || empty($product_id)) {
             $this->sendError('User ID and Product ID are required');
             return;
         }
-    
+
         $query = 'DELETE FROM ' . Cart::getTableName() . ' WHERE user_id = :user_id AND product_id = :product_id';
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id);
         $stmt->bindParam(':product_id', $product_id);
-    
+
         if ($stmt->execute()) {
             $this->sendResponse(['message' => 'Item removed from cart successfully']);
         } else {

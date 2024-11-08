@@ -44,7 +44,7 @@ class UserController extends BaseController {
             $this->sendResponse([
                 'message' => 'User signup successfully',
                 'user' => $user->getUserDetails(),
-                'jwt' => $this->jwt->generateJWT(array('userId' => $user->getUserId()))
+                'token' => $this->jwt->generateJWT(array('userId' => $user->getUserId()))
             ], 201);
         } else {
             $this->sendError('Failed to create user', 500);
@@ -72,7 +72,7 @@ class UserController extends BaseController {
             $this->sendResponse([
                 'message' => 'User login successful',
                 'user' => $user->getUserDetails(),
-                'jwt' => $this->jwt->generateJWT(array('userId' => $user->getUserId()))
+                'token' => $this->jwt->generateJWT(array('userId' => $user->getUserId()))
             ], 201);
         } else {
             $this->sendError('Invalid credentials', 401);
@@ -96,7 +96,10 @@ class UserController extends BaseController {
                 "user" => $user->getUserDetails()
             ), 200);
         } else {
-            $this->sendError("Invalid token", 401);
+//            $this->sendResponse("Invalid token", 401);
+            $this->sendResponse(array(
+                "valid" => false,
+            ), 401);
         }
     }
 

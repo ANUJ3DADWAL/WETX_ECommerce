@@ -44,7 +44,10 @@ class ProductController extends BaseController {
     }
 
     public function getAllProducts(): void {
-        $query = 'SELECT * FROM ' . Product::getTableName();
+        $query = 'SELECT p.*, c.category_name 
+              FROM ' . Product::getTableName() . ' p 
+              JOIN ' . Category::getTableName() . ' c 
+              ON p.category_id = c.category_id';
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -52,7 +55,13 @@ class ProductController extends BaseController {
     }
 
     public function getProduct(int $id, bool $send = false): ?Product {
-        $query = 'SELECT * FROM ' . Product::getTableName() . ' WHERE product_id = :product_id';
+//        $query = 'SELECT * FROM ' . Product::getTableName() . ' WHERE product_id = :product_id';
+
+        $query = 'SELECT p.*, c.category_name 
+              FROM ' . Product::getTableName() . ' p 
+              JOIN ' . Category::getTableName() . ' c 
+              ON p.category_id = c.category_id 
+              WHERE p.product_id = :product_id';
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':product_id', $id);
         $stmt->execute();
