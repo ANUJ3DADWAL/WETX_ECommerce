@@ -80,23 +80,52 @@ class CartController extends BaseController {
         }
     }
 
+    // public function checkout(int $user_id): void {
+    //     // Fetch all cart items for the user and mark them as paid (implement this logic)
+    //     $query = 'SELECT * FROM ' . Cart::getTableName() . ' WHERE user_id = :user_id';
+    //     $stmt = $this->conn->prepare($query);
+    //     $stmt->bindParam(':user_id', $user_id);
+    //     $stmt->execute();
+    //     $cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    //     // Assume payment is successful and clear the cart
+    //     $query = 'DELETE FROM ' . Cart::getTableName() . ' WHERE user_id = :user_id';
+    //     $stmt = $this->conn->prepare($query);
+    //     $stmt->bindParam(':user_id', $user_id);
+    //     if ($stmt->execute()) {
+    //         $this->sendResponse(['message' => 'Checkout successful, payment assumed to be completed']);
+    //     } else {
+    //         $this->sendError('Failed to checkout');
+    //     }
+    // }
+
     public function checkout(int $user_id): void {
-        // Fetch all cart items for the user and mark them as paid (implement this logic)
-        $query = 'SELECT * FROM ' . Cart::getTableName() . ' WHERE user_id = :user_id';
+        // Fetch all cart items for the user and calculate the final price
+        $query = '
+            SELECT 
+                c.product_id, 
+                c.quantity, 
+                p.price, 
+                (c.quantity * p.price) as total_price 
+            FROM ' . Cart::getTableName() . ' c
+            JOIN ' . Product::getTableName() . ' p ON c.product_id = p.product_id
+            WHERE c.user_id = :user_id
+        ';
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id);
         $stmt->execute();
         $cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Assume payment is successful and clear the cart
-        $query = 'DELETE FROM ' . Cart::getTableName() . ' WHERE user_id = :user_id';
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':user_id', $user_id);
-        if ($stmt->execute()) {
-            $this->sendResponse(['message' => 'Checkout successful, payment assumed to be completed']);
-        } else {
-            $this->sendError('Failed to checkout');
+    
+        $finalPrice = 0;
+        foreach ($cartItems as $item) {
+            $finalPrice += $item['total_price'];
         }
+    
+        // Mark the cart items as paid (implement this logic)
+        // ...
+    
+        // Output or return the final price
+        echo 'Final Price: ' . $finalPrice;
     }
 
     public function getCart(int $user_id): void {
