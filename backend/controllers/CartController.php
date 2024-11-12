@@ -44,14 +44,19 @@ class CartController extends BaseController {
             $this->sendError('Quantity must be greater than 0');
         }
 
-        $query = 'UPDATE ' . Cart::getTableName() . ' SET quantity = :quantity user_id = :user_id AND product_id = :product_id';
+        $query = 'UPDATE ' . Cart::getTableName() . ' SET quantity = :quantity WHERE user_id = :user_id AND product_id = :product_id';
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id);
         $stmt->bindParam(':product_id', $product_id);
         $stmt->bindParam(':quantity', $quantity);
-        
+
         if ($stmt->execute()) {
-            $this->sendResponse(['message' => 'Cart quantity updated successfully']);
+            $updatedCart = $this->getCartByUserIdAndProductId($user_id, $product_id);
+
+            $this->sendResponse([
+                'message' => 'Cart quantity updated successfully',
+                'cart' => $updatedCart->getCartDetails()
+            ]);
         } else {
             $this->sendError('Failed to update cart quantity');
         }
@@ -74,7 +79,9 @@ class CartController extends BaseController {
         $stmt->bindParam(':product_id', $product_id);
 
         if ($stmt->execute()) {
-            $this->sendResponse(['message' => 'Item removed from cart successfully']);
+            $this->sendResponse([
+                'message' => 'Item removed from cart successfully'
+            ]);
         } else {
             $this->sendError('Failed to remove item from cart');
         }
@@ -87,7 +94,6 @@ class CartController extends BaseController {
     //     $stmt->bindParam(':user_id', $user_id);
     //     $stmt->execute();
     //     $cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
     //     // Assume payment is successful and clear the cart
     //     $query = 'DELETE FROM ' . Cart::getTableName() . ' WHERE user_id = :user_id';
     //     $stmt = $this->conn->prepare($query);
@@ -115,26 +121,50 @@ class CartController extends BaseController {
         $stmt->bindParam(':user_id', $user_id);
         $stmt->execute();
         $cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
         $finalPrice = 0;
         foreach ($cartItems as $item) {
             $finalPrice += $item['total_price'];
         }
-    
+
         // Mark the cart items as paid (implement this logic)
         // ...
-    
+
         // Output or return the final price
         echo 'Final Price: ' . $finalPrice;
     }
 
-    public function getCart(int $user_id): void {
+    public function getCart(int $user_id, bool $send = false): ?array {
         $query = 'SELECT * FROM ' . Cart::getTableName() . ' WHERE user_id = :user_id';
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id);
         $stmt->execute();
         $cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $this->sendResponse($cartItems);
+
+        if ($send) {
+            $this->sendResponse($cartItems);
+        }
+
+        foreach ($cartItems as &$item) {
+            $item = new Cart($item);
+        }
+
+        return $cartItems;
+    }
+
+    public function getCartByUserIdAndProductId(int $user_id, int $product_id, bool $send = false): ?Cart {
+        $query = 'SELECT * FROM ' . Cart::getTableName() . ' WHERE user_id = :user_id AND product_id = :product_id';
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->bindParam(':product_id', $product_id);
+        $stmt->execute();
+        $cartItem = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($send) {
+            $this->sendResponse($cartItem);
+        }
+
+        return new Cart($cartItem);
     }
 }
 

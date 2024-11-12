@@ -1,4 +1,5 @@
 <?php
+
 class Cart {
     private const TABLE = 'carts';
 
@@ -9,14 +10,33 @@ class Cart {
     private string $created_at;
 
     // Constructor
-    public function __construct(int $user_id, int $product_id, int $quantity) {
-        $this->user_id = $user_id;
-        $this->product_id = $product_id;
-        $this->quantity = $quantity;
+//    public function __construct(int $user_id, int $product_id, int $quantity) {
+//        $this->user_id = $user_id;
+//        $this->product_id = $product_id;
+//        $this->quantity = $quantity;
+//    }
+    public function __construct(array $data) {
+        $this->cart_id = $data['cart_id'];
+        $this->user_id = $data['user_id'];
+        $this->product_id = $data['product_id'];
+        $this->quantity = $data['quantity'];
+        $this->created_at = $data['created_at'];
     }
+
+    public function getCartDetails(): array {
+        return [
+            'cart_id' => $this->getCartId(),
+            'user_id' => $this->getUserId(),
+            'product_id' => $this->getProductId(),
+            'quantity' => $this->getQuantity(),
+            'created_at' => $this->getCreatedAt(),
+        ];
+    }
+
     public static function getTableName(): string {
         return self::TABLE;
     }
+
     // Getters and Setters
     public function getCartId(): int {
         return $this->cart_id;
@@ -50,4 +70,5 @@ class Cart {
         return $this->created_at;
     }
 }
+
 ?>
