@@ -2,7 +2,7 @@
 
 import Rating from "./Rating.tsx";
 import {useNavigate} from "react-router-dom";
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import {ProductState} from "../utils/types.ts";
 
 const ProductCard: React.FC<ProductState> = ({
@@ -11,13 +11,26 @@ const ProductCard: React.FC<ProductState> = ({
                                                  imageUrl: image,
                                                  price,
                                                  categoryName,
-                                                 rating
+                                                 rating,
                                              }) => {
 
     const navigate = useNavigate();
+    const componentRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (componentRef.current) {
+            componentRef.current.classList.add('opacity-0');
+            setTimeout(() => {
+                if (componentRef.current) {
+                    componentRef.current.classList.add('opacity-100', 'transition-opacity', 'duration-300');
+                }
+            }, 250); // Short delay to trigger the animation
+        }
+    }, []);
 
     return (
         <div
+            ref={componentRef}
             className="rounded-md h-[27rem] shadow-lg border cursor-pointer hover:scale-105 transition ease-in-out duration-500"
             onClick={() => navigate(`/product/${productId}`)}
         >
