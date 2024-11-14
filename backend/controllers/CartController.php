@@ -135,7 +135,12 @@ class CartController extends BaseController {
     }
 
     public function getCart(int $user_id, bool $send = false): ?array {
-        $query = 'SELECT * FROM ' . Cart::getTableName() . ' WHERE user_id = :user_id';
+        $query = '
+            SELECT c.*, p.price 
+            FROM ' . Cart::getTableName() . ' c
+            JOIN ' . Product::getTableName() . ' p ON c.product_id = p.product_id
+            WHERE c.user_id = :user_id
+        ';
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id);
         $stmt->execute();
@@ -153,18 +158,51 @@ class CartController extends BaseController {
     }
 
     public function getCartByUserIdAndProductId(int $user_id, int $product_id, bool $send = false): ?Cart {
-        $query = 'SELECT * FROM ' . Cart::getTableName() . ' WHERE user_id = :user_id AND product_id = :product_id';
+        $query = '
+            SELECT c.*, p.price
+            FROM ' . Cart::getTableName() . ' c
+            JOIN ' . Product::getTableName() . ' p ON c.product_id = p.product_id
+            WHERE c.user_id = :user_id AND c.product_id = :product_id
+        ';
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id);
         $stmt->bindParam(':product_id', $product_id);
+
         $stmt->execute();
+
         $cartItem = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$cartItem) {
+            if ($send) {
+                http_response_code(404);
+                $this->sendError('Cart not found');
+            }
+            return null;
+        }
 
         if ($send) {
             $this->sendResponse($cartItem);
         }
 
         return new Cart($cartItem);
+    }
+
+    public function checkIfInCartByUserIdAndProductId(string $param, bool $send = false): void {
+        $param = explode('&', $param);
+        $user_id = $param[0];
+        $product_id = $param[1];
+
+        $cart = $this->getCartByUserIdAndProductId($user_id, $product_id);
+
+        if (!empty($cart)) {
+            $this->sendResponse(array(
+                "found" => true
+            ));
+        } else {
+            $this->sendResponse(array(
+                "found" => false
+            ));
+        }
     }
 }
 
