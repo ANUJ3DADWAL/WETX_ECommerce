@@ -229,7 +229,7 @@ const CartItem: React.FC<CartItemProps & { refetchCartItems: Function }> = ({
 
                 <div className="h-full w-full flex flex-col justify-between gap-2">
                     <h3 className="mb-4 text-2xl font-bold text-gray-800 text-right">
-                        $ {(Number.parseFloat(product.price) * prodQuantity).toFixed(2)}
+                        ₹ {(Number.parseFloat(product.price) * prodQuantity).toFixed(2)}
                     </h3>
 
                     <div className="flex items-center justify-between">
