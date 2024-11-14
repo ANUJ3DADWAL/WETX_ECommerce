@@ -98,6 +98,7 @@ export type UpdateCartItemBody = AddToCartBody
 
 export interface CartBody extends AddToCartBody {
     cart_id: string;
+    price: number;
 }
 
 export interface CartItemProps {
@@ -105,6 +106,7 @@ export interface CartItemProps {
     userId: string,
     productId: string,
     quantity: number,
+    // updateTotalPrice: Function,
     // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
     // setTotalPrice: Function,
 }
@@ -129,4 +131,10 @@ export interface QuantityChangerProps {
     increaseQuantity: () => void,
     decreaseQuantity: () => void,
     disabled?: boolean
+}
+
+export interface ToastProps {
+    message: string;
+    duration?: number;
+    onClose: () => void;
 }

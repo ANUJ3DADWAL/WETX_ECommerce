@@ -40,12 +40,12 @@ const Navbar: React.FC = () => {
                 {isAuthenticated ? (
                     <>
                         <Link to="/cart"
-                              className="flex gap-3 items-center border rounded-lg py-2 px-6 border-slate-700">
+                              className="flex gap-3 items-center border rounded-lg py-2 px-6 border-slate-700 hover:bg-slate-800 hover:text-white transition duration-300 ease-in-out">
                             <FontAwesomeIcon icon={faCartShopping}/> Cart
                         </Link>
                         <button
                             onClick={() => dispatch(logout())}
-                            className="flex gap-3 items-center px-4 py-2 border border-slate-700 rounded-lg"
+                            className="flex gap-3 items-center px-4 py-2 border border-slate-700 rounded-lg hover:bg-slate-800 hover:text-white transition duration-300 ease-in-out"
                         >
                             <FontAwesomeIcon icon={faRightFromBracket}/> Logout
                         </button>
@@ -55,7 +55,7 @@ const Navbar: React.FC = () => {
                         <Link to="/auth/login" className={"bg-black px-6 py-2 rounded-lg text-white"}>
                             Login
                         </Link>
-                        
+
                         <Link to="/auth/signup" className={"bg-black px-6 py-2 rounded-lg text-white"}>
                             Signup
                         </Link>

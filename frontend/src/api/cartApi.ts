@@ -5,7 +5,7 @@ const cartApi = createApi({
     reducerPath: 'cartApi',
     baseQuery: fetchBaseQuery({baseUrl: import.meta.env.VITE_SERVER_URL + '/cart'}),
     endpoints: (builder) => ({
-        addToCart: builder.mutation<void, AddToCartBody>({
+        addToCart: builder.mutation<{ message: string }, AddToCartBody>({
             query: (body: AddToCartBody) => ({
                 url: '/addItem',
                 method: 'POST',
@@ -13,7 +13,7 @@ const cartApi = createApi({
             }),
         }),
 
-        removeFromCart: builder.mutation<void, RemoveFromCartBody>({
+        removeFromCart: builder.mutation<{ message: string }, RemoveFromCartBody>({
             query: (body: RemoveFromCartBody) => ({
                 url: '/removeItem',
                 method: 'POST',
@@ -31,6 +31,10 @@ const cartApi = createApi({
 
         getCartByUserId: builder.query<CartBody[], string>({
             query: (userId) => `/getCart/${userId}`,
+        }),
+
+        checkIfInCartByUserIdAndProductId: builder.query<{ found: boolean }, { userId: string, productId: string }>({
+            query: ({userId, productId}) => `/checkIfInCartByUserIdAndProductId/${userId}&${productId}`
         })
     })
 });
@@ -39,6 +43,7 @@ export const {
     useAddToCartMutation,
     useRemoveFromCartMutation,
     useUpdateCartItemQuantityMutation,
-    useGetCartByUserIdQuery
+    useGetCartByUserIdQuery,
+    useCheckIfInCartByUserIdAndProductIdQuery
 } = cartApi;
 export default cartApi;
