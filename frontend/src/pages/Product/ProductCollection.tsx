@@ -6,38 +6,50 @@ import Loading from "../../components/Loading.tsx";
 
 const ProductCollection: React.FC = () => {
     const {data: products, isLoading} = useGetAllProductsQuery();
-    console.log(products);
     const rating = {count: 101, stars: 5};
 
-    if (isLoading || !products) return <Loading/>;
+    if (isLoading || products === undefined) return <Loading/>;
 
     return (
-        <div className="w-full h-full px-12 py-6 min-h-[78vh]">
-            <h1 className="text-3xl font-bold mt-4 mb-8">
+        <>
+            <h1 className="w-full text-4xl font-bold mb-8 flex justify-center items-center bg-black text-white py-24">
                 Our Products
             </h1>
-
-            <div>
-                <div className="flex flex-wrap gap-4">
-                    {products.map(({product_id, product_name, image_url, price, category_id, category_name}) => (
-                        <ProductCard
-                            key={product_id}
-                            productId={product_id}
-                            productName={product_name}
-                            imageUrl={image_url}
-                            price={price}
-                            categoryId={category_id}
-                            categoryName={category_name}
-                            rating={rating}
-                        />
-                    ))}
+            <div className="w-full h-full px-12 py-6 min-h-[78vh]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                    {
+                        products.length !== 0 ? (
+                            products.map(({
+                                              product_id,
+                                              product_name,
+                                              image_url,
+                                              price,
+                                              category_id,
+                                              category_name
+                                          }) => (
+                                <ProductCard
+                                    key={product_id}
+                                    productId={product_id}
+                                    productName={product_name}
+                                    imageUrl={image_url}
+                                    price={price}
+                                    categoryId={category_id}
+                                    categoryName={category_name}
+                                    rating={rating}
+                                />
+                            ))) : (
+                            <h1 className={"h-full min-h-[50vh] w-full flex justify-center items-center"}>
+                                No Products Found
+                            </h1>
+                        )
+                    }
                 </div>
 
                 <div>
                     {/*<Filter/>*/}
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

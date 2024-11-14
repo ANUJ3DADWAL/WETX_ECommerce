@@ -41,8 +41,11 @@ const productApi = createApi({
                 method: "DELETE",
                 body: {productId: productId},
             })
-        })
+        }),
 
+        searchProduct: builder.query<ProductResponseBody[], string>({
+            query: (searchQuery) => `/product/searchProduct/${searchQuery}`
+        })
     })
 });
 
@@ -51,6 +54,7 @@ export const {
     useGetProductByIdQuery,
     useCreateProductMutation,
     useUpdateProductMutation,
-    useDeleteProductMutation
+    useDeleteProductMutation,
+    useSearchProductQuery
 } = productApi;
 export default productApi;
