@@ -6,11 +6,24 @@ import CartItem from "../../components/CartItem.tsx";
 import Loading from "../../components/Loading.tsx";
 import {faCartShopping} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useCreateOrderMutation} from "../../api/paymentApi.ts";
+import RazorpayCheckout from "../../services/RazorpayCheckout.tsx";
+import DeliveryDetailsModal from "../../components/DeliveryDetailsModal.tsx";
+
+// const CheckoutModal = ({orderDetails}) => {
+//     return (
+//         <div className={"w-[50rem] h-[50rem] absolute z-50 shadow rounded-xl"}>
+//             <RazorpayCheckout orderDetails={orderDetails}/>
+//         </div>
+//     );
+// };
 
 const Cart: React.FC = () => {
     const {user} = useSelector((state: RootState) => state.user);
     const [userId, setUserId] = useState<string | null>(null);
     const [totalPrice, setTotalPrice] = useState<number>(0);
+    // const [orderDetails, setOrderDetails] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (user?.user_id) {
@@ -21,6 +34,7 @@ const Cart: React.FC = () => {
     const {data: items, refetch} = useGetCartByUserIdQuery(userId ?? '', {
         skip: !userId,
     });
+    // const [createOrder] = useCreateOrderMutation();
 
     useEffect(() => {
         if (userId) {
@@ -46,6 +60,10 @@ const Cart: React.FC = () => {
         return <Loading/>;
     }
 
+    const handleCheckout = () => {
+        setIsModalOpen(true);
+    };
+
     return (
         <>
             <h1 className="w-full text-4xl font-bold mb-8 flex justify-center items-center bg-black text-white py-24">
@@ -65,18 +83,23 @@ const Cart: React.FC = () => {
                                       userId={user_id} refetchCartItems={refetch}/>
                         ))}
                         <div className="mt-8 flex justify-between p-4">
-            <span className="text-3xl font-bold">
-                Total Price: <span className="text-red-500">₹ {totalPrice}</span>
-            </span>
+                            <span className="text-3xl font-bold">
+                                Total Price: <span className="text-red-500">₹ {totalPrice}</span>
+                            </span>
+
                             <button
+                                onClick={handleCheckout}
                                 className="px-8 py-4 rounded-lg bg-black hover:bg-black/85 ease-in-out transition duration-300 text-white flex items-center gap-4">
                                 <FontAwesomeIcon icon={faCartShopping}/>
                                 Checkout
                             </button>
+                            {/*<RazorpayCheckout/>*/}
                         </div>
                     </>
                 )}
             </div>
+
+            {isModalOpen && <DeliveryDetailsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>}
         </>
     );
 };

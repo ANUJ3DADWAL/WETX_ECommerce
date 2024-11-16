@@ -25,9 +25,21 @@ const authApi = createApi({
                 method: "POST",
                 body: {token: token},
             })
-        })
+        }),
+        addDeliveryDetails: builder.mutation({
+            query: ({userId, deliveryDetails}) => ({
+                url: `/user/addDeliveryDetails/${userId}`,
+                method: "POST",
+                body: deliveryDetails,
+            }),
+        }),
     })
 });
 
-export const {useUserLoginMutation, useUserSignupMutation, useGetUserFromTokenMutation} = authApi;
+export const {
+    useUserLoginMutation,
+    useUserSignupMutation,
+    useGetUserFromTokenMutation,
+    useAddDeliveryDetailsMutation
+} = authApi;
 export default authApi;
