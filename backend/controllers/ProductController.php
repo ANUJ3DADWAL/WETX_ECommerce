@@ -117,6 +117,22 @@ class ProductController extends BaseController {
             $this->sendError('Failed to delete product');
         }
     }
+
+    public function searchProduct(string $searchQuery): void {
+        $query = 'SELECT * FROM ' . Product::getTableName() . ' WHERE product_name LIKE :searchQuery';
+        $stmt = $this->conn->prepare($query);
+        $searchQuery = '%' . $searchQuery . '%';
+        $stmt->bindParam(":searchQuery", $searchQuery);
+
+        $results = [];
+        if ($stmt->execute()) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        if (!empty($results)) {
+            $this->sendResponse($results);
+        }
+    }
 }
 
 ?>
