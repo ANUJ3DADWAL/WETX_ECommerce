@@ -1,8 +1,13 @@
 export interface UserState {
-    user_id: string,
-    // username: string,
-    first_name: string,
-    last_name: string,
+    user_id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone_number: string | null;
+    base_address: string | null;
+    city: string | null;
+    state: string | null;
+    created_at: string;
 }
 
 export interface UserSliceState {
@@ -137,4 +142,11 @@ export interface ToastProps {
     message: string;
     duration?: number;
     onClose: () => void;
+}
+
+export interface DeliveryDetails {
+    phone: string;
+    base_address: string;
+    state: string;
+    city: string;
 }

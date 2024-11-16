@@ -5,7 +5,7 @@ import {RootState} from "../app/store.ts";
 import {logout} from "../features/userSlice.ts";
 import Search from "./Search.tsx";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCartShopping, faRightFromBracket} from "@fortawesome/free-solid-svg-icons";
+import {faCartShopping, faCircleUser, faRightFromBracket} from "@fortawesome/free-solid-svg-icons";
 
 const Navbar: React.FC = () => {
     const dispatch = useDispatch();
@@ -43,12 +43,18 @@ const Navbar: React.FC = () => {
                               className="flex gap-3 items-center border rounded-lg py-2 px-6 border-slate-700 hover:bg-slate-800 hover:text-white transition duration-300 ease-in-out">
                             <FontAwesomeIcon icon={faCartShopping}/> Cart
                         </Link>
+
                         <button
-                            onClick={() => dispatch(logout())}
-                            className="flex gap-3 items-center px-4 py-2 border border-slate-700 rounded-lg hover:bg-slate-800 hover:text-white transition duration-300 ease-in-out"
-                        >
-                            <FontAwesomeIcon icon={faRightFromBracket}/> Logout
+                            className={"hover:bg-neutral-400/40 p-1.5 rounded-lg transition ease-in-out duration-300 flex justify-center items-center"}>
+                            <FontAwesomeIcon className={"h-7 w-7"} icon={faCircleUser}/>
                         </button>
+
+                        {/*<button*/}
+                        {/*    onClick={() => dispatch(logout())}*/}
+                        {/*    className="flex gap-3 items-center px-4 py-2 border border-slate-700 rounded-lg hover:bg-slate-800 hover:text-white transition duration-300 ease-in-out"*/}
+                        {/*>*/}
+                        {/*    <FontAwesomeIcon icon={faRightFromBracket}/> Logout*/}
+                        {/*</button>*/}
                     </>
                 ) : (
                     <>
