@@ -7,6 +7,7 @@ class Cart {
     private int $user_id;
     private int $product_id;
     private int $quantity;
+    private int $price;
     private string $created_at;
 
     // Constructor
@@ -20,6 +21,7 @@ class Cart {
         $this->user_id = $data['user_id'];
         $this->product_id = $data['product_id'];
         $this->quantity = $data['quantity'];
+        $this->price = $data['price'];
         $this->created_at = $data['created_at'];
     }
 
@@ -29,6 +31,7 @@ class Cart {
             'user_id' => $this->getUserId(),
             'product_id' => $this->getProductId(),
             'quantity' => $this->getQuantity(),
+            'price' => $this->getQuantity(),
             'created_at' => $this->getCreatedAt(),
         ];
     }
@@ -64,6 +67,14 @@ class Cart {
 
     public function setQuantity(int $quantity): void {
         $this->quantity = $quantity;
+    }
+
+    public function getPrice(): int {
+        return $this->price;
+    }
+
+    public function setPrice(int $price): void {
+        $this->price = $price;
     }
 
     public function getCreatedAt(): string {
