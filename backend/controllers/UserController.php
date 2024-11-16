@@ -196,6 +196,32 @@ class UserController extends BaseController {
             $this->sendError('Failed to delete user');
         }
     }
+
+    public function addDeliveryDetails(int $userId): void {
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        foreach ($data as &$element) {
+            $element = htmlspecialchars($element);
+        }
+
+        if (empty($data['phone']) || empty($data['base_address']) || empty($data['city']) || empty($data['state'])) {
+            $this->sendError('Invalid request. Enter required parameters.');
+        }
+
+        $query = 'UPDATE ' . User::getTableName() . ' SET phone_number = :phone, base_address = :base_address, city = :city, state = :state WHERE user_id = :user_id';
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':phone', $data['phone']);
+        $stmt->bindParam(':base_address', $data['base_address']);
+        $stmt->bindParam(':city', $data['city']);
+        $stmt->bindParam(':state', $data['state']);
+        $stmt->bindParam(':user_id', $userId);
+
+        if ($stmt->execute()) {
+            $this->sendResponse(['message' => 'Delivery details added successfully']);
+        } else {
+            $this->sendError('Failed to add delivery details');
+        }
+    }
 }
 
 ?>
