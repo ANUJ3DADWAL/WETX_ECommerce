@@ -9,7 +9,7 @@ class User {
     private ?string $first_name;
     private ?string $last_name;
     private ?string $phone_number;
-    private ?string $base_address;
+    private ?string $base_address;   // Same for Shipping address
     private ?string $city;
     private ?string $state;
     private string $created_at;

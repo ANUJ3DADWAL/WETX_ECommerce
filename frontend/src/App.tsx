@@ -15,6 +15,7 @@ import Cart from "./pages/Cart/Cart.tsx";
 import About from "./pages/About.tsx";
 import Footer from "./components/Footer.tsx";
 import Profile from "./pages/Profile/Profile.tsx";
+import AboutUs from './components/AboutUs.tsx';
 
 const App: React.FC = () => {
     const dispatch = useDispatch();
@@ -55,12 +56,13 @@ const App: React.FC = () => {
                 <Route path="/products" element={<ProductCollection/>}/>
                 <Route path="/product/:productId" element={<Product/>}/>
                 <Route path="/cart" element={<Cart/>}/>
-                <Route path="/about" element={<About/>}/>
+                <Route path="/about" element={<AboutUs/>}/>
 
                 <Route path="/profile" element={<Profile/>}/>
 
                 <Route path="*" element={<Error404/>}/>
             </Routes>
+
             <Footer/>
         </div>
     );
