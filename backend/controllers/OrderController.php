@@ -1,36 +1,4 @@
 <?php
-// require_once 'BaseController.php';
-// require_once '../models/Order.php';
-
-// class OrderController extends BaseController {
-//     public function createOrder() {
-//         $data = json_decode(file_get_contents("php://input"), true);
-//         $order = new Order($data['user_id'], $data['total_amount'], $data['status'], $data['shipping_address']);
-//         // Save order to database (implement this logic)
-//         $this->sendResponse(['message' => 'Order created successfully']);
-//     }
-
-//     public function getOrder($id) {
-//         // Fetch order from database by $id (implement this logic)
-//         $order = new Order(1, 100.0); // Example order
-//         $this->sendResponse($order);
-//     }
-
-//     public function updateOrder($id) {
-//         $data = json_decode(file_get_contents("php://input"), true);
-//         // Fetch order from database by $id and update (implement this logic)
-//         $this->sendResponse(['message' => 'Order updated successfully']);
-//     }
-
-//     public function deleteOrder($id) {
-//         // Delete order from database by $id (implement this logic)
-//         $this->sendResponse(['message' => 'Order deleted successfully']);
-//     }
-// }
-?>
-
-
-<?php
 require_once 'BaseController.php';
 require_once __DIR__ . '/../models/Order.php';
 require_once __DIR__ . '/../config/Database.php';
@@ -45,37 +13,70 @@ class OrderController extends BaseController {
 
     public function createOrder(): void {
         $data = json_decode(file_get_contents("php://input"), true);
-        $query = 'INSERT INTO `Order` (user_id, total_amount, status, shipping_address) VALUES (:user_id, :total_amount, :status, :shipping_address)';
+        $query = 'INSERT INTO ' . Order::getTableName() . ' (order_id, user_id, order_date, total_amount, status, shipping_base_address, shipping_city, shipping_state) VALUES (:order_id, :user_id, :order_date, :total_amount, :status, :shipping_base_address, :shipping_city, :shipping_state)';
+
         $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':order_id', $data['order_id']);
         $stmt->bindParam(':user_id', $data['user_id']);
+        $stmt->bindParam(':order_date', $data['order_date']);
         $stmt->bindParam(':total_amount', $data['total_amount']);
         $stmt->bindParam(':status', $data['status']);
-        $stmt->bindParam(':shipping_address', $data['shipping_address']);
+        $stmt->bindParam(':shipping_base_address', $data['shipping_base_address']);
+        $stmt->bindParam(':shipping_city', $data['shipping_city']);
+        $stmt->bindParam(':shipping_state', $data['shipping_state']);
+
         if ($stmt->execute()) {
-            $this->sendResponse(['message' => 'Order created successfully']);
+            $orderId = $data['order_id'];
+            $order = $this->getOrder($orderId);
+
+            $this->sendResponse([
+                'message' => 'Order created successfully',
+                'order' => $order->getOrderDetails(),
+            ], 201);
         } else {
             $this->sendError('Failed to create order');
         }
     }
 
-    public function getOrder(int $id): void {
-        $query = 'SELECT * FROM `Order` WHERE order_id = :order_id';
+    public function getAllOrders(): void {
+        $query = 'SELECT * FROM ' . Order::getTableName();
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->sendResponse($orders);
+    }
+
+    public function getOrder(string $id, bool $send = false): ?Order {
+        $query = 'SELECT * FROM ' . Order::getTableName() . ' WHERE order_id = :order_id';
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':order_id', $id);
         $stmt->execute();
         $order = $stmt->fetch(PDO::FETCH_ASSOC);
-        $this->sendResponse($order);
+
+        if ($send) {
+            if ($order) {
+                $this->sendResponse($order);
+            } else {
+                $this->sendError('Order not found', 404);
+            }
+        }
+
+        return new Order($order);
     }
 
-    public function updateOrder(int $id): void {
+    public function updateOrder(string $id): void {
         $data = json_decode(file_get_contents("php://input"), true);
-        $query = 'UPDATE `Order` SET user_id = :user_id, total_amount = :total_amount, status = :status, shipping_address = :shipping_address WHERE order_id = :order_id';
+        $query = 'UPDATE ' . Order::getTableName() . ' SET user_id = :user_id, order_date = :order_date, total_amount = :total_amount, status = :status, shipping_base_address = :shipping_base_address, shipping_city = :shipping_city, shipping_state = :shipping_state WHERE order_id = :order_id';
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $data['user_id']);
+        $stmt->bindParam(':order_date', $data['order_date']);
         $stmt->bindParam(':total_amount', $data['total_amount']);
         $stmt->bindParam(':status', $data['status']);
-        $stmt->bindParam(':shipping_address', $data['shipping_address']);
+        $stmt->bindParam(':shipping_base_address', $data['shipping_base_address']);
+        $stmt->bindParam(':shipping_city', $data['shipping_city']);
+        $stmt->bindParam(':shipping_state', $data['shipping_state']);
         $stmt->bindParam(':order_id', $id);
+
         if ($stmt->execute()) {
             $this->sendResponse(['message' => 'Order updated successfully']);
         } else {
@@ -83,8 +84,20 @@ class OrderController extends BaseController {
         }
     }
 
-    public function deleteOrder(int $id): void {
-        $query = 'DELETE FROM `Order` WHERE order_id = :order_id';
+    public function deleteOrder(): void {
+        $data = json_decode(file_get_contents("php://input"), true);
+        $id = $data['order_id'];
+
+        if (empty($id)) {
+            $this->sendError('Order id is required');
+        }
+
+        $order = $this->getOrder($id);
+        if (empty($order)) {
+            $this->sendError('Order not found', 404);
+        }
+
+        $query = 'DELETE FROM ' . Order::getTableName() . ' WHERE order_id = :order_id';
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':order_id', $id);
         if ($stmt->execute()) {
@@ -94,4 +107,5 @@ class OrderController extends BaseController {
         }
     }
 }
+
 ?>
