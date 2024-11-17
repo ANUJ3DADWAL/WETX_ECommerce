@@ -30,8 +30,13 @@ const Navbar: React.FC = () => {
     return (
         <div className="w-full flex justify-between items-center h-20 bg-[#E5E5E5] py-8 px-16">
             <div className="text-3xl font-bold">
+                {/* I am not able to add logo properly showing very small */}
                 <h1>WetX</h1>
             </div>
+            
+            {/* <div className="text-3xl font-bold">
+    <img src="/images/wetx.png" alt="WetX Logo" style={{ width: '64px', height: '64px' }} />
+</div> */}
 
             <div className="flex gap-20 items-center">
                 <Link

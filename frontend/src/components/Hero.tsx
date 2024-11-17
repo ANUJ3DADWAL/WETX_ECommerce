@@ -9,6 +9,7 @@ const Hero: React.FC = () => {
         <div className="w-full h-full">
             {/*<img src={url} alt="Hero Image"/>*/}
             <HeroCarousel/>
+            
         </div>
     );
 };
