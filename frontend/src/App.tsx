@@ -12,12 +12,11 @@ import {useGetUserFromTokenMutation} from "./api/authApi.ts";
 import ProductCollection from "./pages/Product/ProductCollection.tsx";
 import Product from "./pages/Product/Product.tsx";
 import Cart from "./pages/Cart/Cart.tsx";
-import About from "./pages/About.tsx";
+import AboutUs from "./pages/AboutUs/AboutUs.tsx";
 import Footer from "./components/Footer.tsx";
 import Profile from "./pages/Profile/Profile.tsx";
 import Orders from "./pages/Orders/Orders.tsx";
 import OrderDetails from "./pages/Orders/OrderDetails.tsx";
-import AboutUs from './components/AboutUs.tsx';
 
 const App: React.FC = () => {
     const dispatch = useDispatch();
