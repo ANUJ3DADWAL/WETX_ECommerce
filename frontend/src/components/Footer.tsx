@@ -110,8 +110,7 @@ const Footer: React.FC = () => {
         <div className="flex flex-wrap justify-between items-center">
           {/* Copyright */}
           <div className="text-gray-400 text-sm">
-            Copyright ©2024 All rights reserved. | This template is made  by{" "}
-            <span className="text-blue-500">Anuj Dadwal</span>
+            Copyright ©2024 All rights reserved.
           </div>
 
           {/* Social Media */}
