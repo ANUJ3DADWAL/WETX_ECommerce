@@ -4,6 +4,7 @@ import {useSelector} from "react-redux";
 import {RootState} from "../app/store.ts";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faWallet} from "@fortawesome/free-solid-svg-icons";
+import {useNavigate} from "react-router-dom";
 
 const RazorpayCheckout: React.FC<{
     isDisabled?: boolean,
@@ -12,6 +13,7 @@ const RazorpayCheckout: React.FC<{
     const {user} = useSelector((state: RootState) => state.user);
     const [createOrder] = useCreateOrderMutation();
     const [verifyPayment] = useVerifyPaymentMutation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const script = document.createElement('script');
@@ -33,7 +35,7 @@ const RazorpayCheckout: React.FC<{
 
             const options = {
                 key: import.meta.env.VITE_RAZORPAY_API_KEY,
-                amount: amount, // amount in paise
+                amount: amount,
                 currency: currency,
                 name: "WETX",
                 description: "Payment for your order",
@@ -44,7 +46,10 @@ const RazorpayCheckout: React.FC<{
                     console.log(response);
                     // Verify payment on the backend
                     verifyPayment(response)
-                        .then(res => console.log(res.data))
+                        .then(res => {
+                            console.log(res.data);
+                            navigate(`/order-details/${order_id}`);
+                        })
                         .catch(err => console.error(err));
                 },
                 prefill: {
@@ -63,8 +68,8 @@ const RazorpayCheckout: React.FC<{
                         console.log("Checkout form closed");
                     },
                     animation: true,
-                    width: "100%", // Set a valid length value
-                    height: "100%", // Set a valid length value
+                    width: "100%",
+                    height: "100%",
                 },
             };
 
@@ -77,7 +82,6 @@ const RazorpayCheckout: React.FC<{
     };
 
     return (
-        // <div className={"w-full min-h-[90vh] flex justify-center items-center"}>
         <button
             type={"button"}
             disabled={isDisabled}
@@ -86,7 +90,6 @@ const RazorpayCheckout: React.FC<{
         >
             <FontAwesomeIcon icon={faWallet}/> Pay with Razorpay
         </button>
-        // </div>
     );
 };
 

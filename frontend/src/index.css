@@ -14,3 +14,17 @@
 body {
     min-height: 100vh;
 }
+
+@layer utilities {
+    .transition-ease-md {
+        transition: all 0.3s ease-in-out;
+    }
+
+    .transition-ease-lg {
+        transition: all 0.5s ease-in-out;
+    }
+
+    /*.hover-animation:hover {*/
+    /*    transform: scale(1.05);*/
+    /*}*/
+}
