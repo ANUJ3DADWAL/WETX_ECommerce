@@ -15,6 +15,8 @@ import Cart from "./pages/Cart/Cart.tsx";
 import About from "./pages/About.tsx";
 import Footer from "./components/Footer.tsx";
 import Profile from "./pages/Profile/Profile.tsx";
+import Orders from "./pages/Orders/Orders.tsx";
+import OrderDetails from "./pages/Orders/OrderDetails.tsx";
 
 const App: React.FC = () => {
     const dispatch = useDispatch();
@@ -58,6 +60,8 @@ const App: React.FC = () => {
                 <Route path="/about" element={<About/>}/>
 
                 <Route path="/profile" element={<Profile/>}/>
+                <Route path="/orders" element={<Orders/>}/>
+                <Route path="/order-details/:orderId" element={<OrderDetails/>}/>
 
                 <Route path="*" element={<Error404/>}/>
             </Routes>

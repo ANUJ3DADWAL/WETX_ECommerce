@@ -6,35 +6,23 @@ import CartItem from "../../components/CartItem.tsx";
 import Loading from "../../components/Loading.tsx";
 import {faCartShopping} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useCreateOrderMutation} from "../../api/paymentApi.ts";
-import RazorpayCheckout from "../../services/RazorpayCheckout.tsx";
 import DeliveryDetailsModal from "../../components/DeliveryDetailsModal.tsx";
-
-// const CheckoutModal = ({orderDetails}) => {
-//     return (
-//         <div className={"w-[50rem] h-[50rem] absolute z-50 shadow rounded-xl"}>
-//             <RazorpayCheckout orderDetails={orderDetails}/>
-//         </div>
-//     );
-// };
 
 const Cart: React.FC = () => {
     const {user} = useSelector((state: RootState) => state.user);
     const [userId, setUserId] = useState<string | null>(null);
     const [totalPrice, setTotalPrice] = useState<number>(0);
-    // const [orderDetails, setOrderDetails] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (user?.user_id) {
-            setUserId(user.user_id);
+            setUserId(user.user_id.toString());
         }
     }, [user]);
 
     const {data: items, refetch} = useGetCartByUserIdQuery(userId ?? '', {
         skip: !userId,
     });
-    // const [createOrder] = useCreateOrderMutation();
 
     useEffect(() => {
         if (userId) {
@@ -70,8 +58,6 @@ const Cart: React.FC = () => {
                 My Cart
             </h1>
             <div className="flex flex-col gap-4 px-12 py-6 min-h-[85vh]">
-                {/*<h1 className="text-3xl font-bold my-4 underline ms-4">My Cart</h1>*/}
-
                 {items.length === 0 ? (
                     <h1 className={"h-full min-h-[50vh] w-full flex justify-center items-center"}>
                         No products in Cart. Add some products to cart for purchase.
@@ -93,7 +79,6 @@ const Cart: React.FC = () => {
                                 <FontAwesomeIcon icon={faCartShopping}/>
                                 Checkout
                             </button>
-                            {/*<RazorpayCheckout/>*/}
                         </div>
                     </>
                 )}
