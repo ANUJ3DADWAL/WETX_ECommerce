@@ -1,10 +1,12 @@
-import React, {useEffect} from 'react';
-import {useCreateOrderMutation, useVerifyPaymentMutation} from "../api/paymentApi.ts";
+import React, {useEffect, useState} from 'react';
+import {useAddTransactionMutation, useCreateOrderMutation, useVerifyPaymentMutation} from "../api/paymentApi.ts";
 import {useSelector} from "react-redux";
 import {RootState} from "../app/store.ts";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faWallet} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router-dom";
+import {useInsertOrderMutation} from "../api/orderApi.ts";
+import {useRemoveAllCartItemsByUserIdMutation} from "../api/cartApi.ts";
 
 const RazorpayCheckout: React.FC<{
     isDisabled?: boolean,
@@ -12,8 +14,16 @@ const RazorpayCheckout: React.FC<{
 }> = ({isDisabled, otherClasses}) => {
     const {user} = useSelector((state: RootState) => state.user);
     const [createOrder] = useCreateOrderMutation();
+    const [insertOrder] = useInsertOrderMutation();
+    const [removeAllCartItemsByUserId] = useRemoveAllCartItemsByUserIdMutation();
     const [verifyPayment] = useVerifyPaymentMutation();
+    const [addTransaction] = useAddTransactionMutation();
     const navigate = useNavigate();
+    // const [orderData, setOrderData] = useState<{ order_id: string, currency: string, amount: number }>({
+    //     order_id: '',
+    //     amount: 0,
+    //     currency: 'INR'
+    // });
 
     useEffect(() => {
         const script = document.createElement('script');
@@ -41,15 +51,41 @@ const RazorpayCheckout: React.FC<{
                 description: "Payment for your order",
                 image: "https://cdn.razorpay.com/logos/GhROQceyan79pGE_medium.png",
                 order_id: order_id,
-                handler: (response: object) => {
+                handler: (response: {
+                    razorpay_order_id: string,
+                    razorpay_payment_id: string,
+                    razorpay_signature: string
+                }) => {
                     // Handle the payment response here
                     console.log(response);
                     // Verify payment on the backend
-                    verifyPayment(response)
-                        .then(res => {
-                            console.log(res.data);
-                            navigate(`/order-details/${order_id}`);
-                        })
+                    verifyPayment({
+                        userId: user.user_id,
+                        ...response
+                    }).then(async (res) => {
+                        console.log(res.data);
+                        const {data: r} = await insertOrder({
+                            order_id: order_id,
+                            user_id: user.user_id,
+                            total_amount: amount,
+                            shipping_base_address: user.base_address,
+                            shipping_city: user.city,
+                            shipping_state: user.state,
+                        });
+                        console.log(r);
+                        console.log(order_id);
+
+                        await addTransaction({
+                            user_id: user.user_id,
+                            order_id: response.razorpay_order_id,
+                            payment_id: response.razorpay_payment_id,
+                            payment_signature: response.razorpay_signature
+                        });
+
+                        await removeAllCartItemsByUserId(user.user_id);
+
+                        navigate(`/order-details/${order_id}`);
+                    })
                         .catch(err => console.error(err));
                 },
                 prefill: {
