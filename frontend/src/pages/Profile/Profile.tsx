@@ -12,7 +12,7 @@ const Profile: React.FC = () => {
 
     return (
         <div className="min-h-screen p-4 bg-gray-100">
-            <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
+            <div className="max-w-4xl mx-auto pt-8 px-4 pb-4 bg-white shadow-md rounded-lg overflow-hidden">
                 <div className="grid grid-cols-1 md:grid-cols-3">
                     <div className="col-span-1 p-4 flex justify-center items-center">
                         <div
@@ -64,9 +64,9 @@ const Profile: React.FC = () => {
                 </div>
 
                 <div className="p-4">
-                    <h2 className="text-2xl font-semibold mb-4">Orders</h2>
+                    <h2 className="text-2xl font-semibold mb-4">Wishlist</h2>
                     <div className="bg-gray-200 p-4 rounded-lg">
-                        <p className="text-gray-600">Placeholder data for future orders.</p>
+                        <p className="text-gray-600">Wishlist products to show here.</p>
                     </div>
                 </div>
             </div>

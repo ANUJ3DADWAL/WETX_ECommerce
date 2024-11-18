@@ -35,6 +35,13 @@ const cartApi = createApi({
 
         checkIfInCartByUserIdAndProductId: builder.query<{ found: boolean }, { userId: string, productId: string }>({
             query: ({userId, productId}) => `/checkIfInCartByUserIdAndProductId/${userId}&${productId}`
+        }),
+
+        removeAllCartItemsByUserId: builder.mutation({
+            query: (userId) => ({
+                url: `/removeAllCartItemsByUserId/${userId}`,
+                method: 'DELETE',
+            })
         })
     })
 });
@@ -44,6 +51,7 @@ export const {
     useRemoveFromCartMutation,
     useUpdateCartItemQuantityMutation,
     useGetCartByUserIdQuery,
-    useCheckIfInCartByUserIdAndProductIdQuery
+    useCheckIfInCartByUserIdAndProductIdQuery,
+    useRemoveAllCartItemsByUserIdMutation
 } = cartApi;
 export default cartApi;

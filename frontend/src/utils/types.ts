@@ -73,7 +73,7 @@ export interface ProductResponseBody {
     price: string,
     stock_quantity: number,
     image_url: string,
-    // created_at: string
+    created_at: string
 }
 
 export interface ProductState {
@@ -149,4 +149,20 @@ export interface DeliveryDetails {
     base_address: string;
     state: string;
     city: string;
+}
+
+export interface OrderItemProps {
+    order_date: string;
+    order_id: string;
+    order_items: Array<{
+        order_item_id: number;
+        price: string;
+        product: ProductResponseBody;
+        quantity: number;
+    }>;
+    shipping_base_address: string;
+    shipping_city: string;
+    shipping_state: string;
+    status: string;
+    total_amount: string;
 }
