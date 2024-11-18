@@ -12,10 +12,13 @@ const ProductCollection: React.FC = () => {
 
     return (
         <>
-            <h1 className="w-full text-4xl font-bold mb-8 flex justify-center items-center bg-black text-white py-24">
+            <h1
+                className="w-full text-4xl font-bold mb-8 flex justify-center items-center text-white py-24"
+                style={{ backgroundImage: 'url(./images/product-img.jpeg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
+            >
                 Our Products
             </h1>
-            <div className="w-full h-full px-12 py-6 min-h-[78vh]">
+            <div className="w-full h-full px-12 py-6 min-h-[78vh] ">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                     {
                         products.length !== 0 ? (
