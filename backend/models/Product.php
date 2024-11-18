@@ -5,6 +5,7 @@ class Product {
 
     private int $product_id;
     private int $category_id;
+    private ?string $category_name;
     private string $product_name;
     private ?string $description;
     private float $price;
@@ -25,6 +26,7 @@ class Product {
     public function __construct(array $data) {
         $this->product_id = $data['product_id'];
         $this->category_id = $data['category_id'];
+        $this->category_name = $data['product_name'];
         $this->product_name = $data['product_name'];
         $this->description = $data['description'] ?? null;
         $this->price = $data['price'];
@@ -42,6 +44,7 @@ class Product {
             'product_id' => $this->getProductId(),
             'category_id' => $this->getCategoryId(),
             'product_name' => $this->getProductName(),
+            'category_name' => $this->getCategoryName(),
             'description' => $this->getDescription(),
             'price' => $this->getPrice(),
             'stock_quantity' => $this->getStockQuantity(),
@@ -61,6 +64,14 @@ class Product {
 
     public function setCategoryId(int $category_id): void {
         $this->category_id = $category_id;
+    }
+
+    public function getCategoryName(): string {
+        return $this->category_name;
+    }
+
+    public function setCategoryName(string $category_name): void {
+        $this->category_name = $category_name;
     }
 
     public function getProductName(): string {

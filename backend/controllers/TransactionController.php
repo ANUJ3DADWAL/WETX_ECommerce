@@ -9,7 +9,7 @@ class TransactionController extends BaseController {
     public function __construct() {
         $database = new Database();
         $this->conn = $database->connect();
-    }   
+    }
 
     public function addTransaction(): void {
         $data = json_decode(file_get_contents("php://input"), true);

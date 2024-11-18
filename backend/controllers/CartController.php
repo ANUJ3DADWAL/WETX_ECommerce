@@ -134,6 +134,9 @@ class CartController extends BaseController {
         echo 'Final Price: ' . $finalPrice;
     }
 
+    /**
+     * @return ?Cart[]
+     */
     public function getCart(int $user_id, bool $send = false): ?array {
         $query = '
             SELECT c.*, p.price 
@@ -202,6 +205,18 @@ class CartController extends BaseController {
             $this->sendResponse(array(
                 "found" => false
             ));
+        }
+    }
+
+    public function removeAllCartItemsByUserId(int $user_id): void {
+        $query = 'DELETE FROM ' . Cart::getTableName() . ' WHERE user_id = :user_id';
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id);
+
+        if ($stmt->execute()) {
+            $this->sendResponse(['message' => 'All cart items removed successfully']);
+        } else {
+            $this->sendError('Failed to remove cart items');
         }
     }
 }

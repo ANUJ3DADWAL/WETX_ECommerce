@@ -50,6 +50,7 @@ require_once 'controllers/ProductController.php';
 require_once 'controllers/OrderController.php';
 require_once 'controllers/CartController.php';
 require_once 'controllers/PaymentController.php';
+require_once 'controllers/AdminController.php';
 
 $request_method = $_SERVER["REQUEST_METHOD"];
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);

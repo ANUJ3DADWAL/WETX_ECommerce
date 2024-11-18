@@ -11,8 +11,8 @@ class OrderItemsController extends BaseController {
         $this->conn = $database->connect();
     }
 
-    public function addOrderItem(): void {
-        $data = json_decode(file_get_contents("php://input"), true);
+    public function addOrderItem(array $data): void {
+//        $data = json_decode(file_get_contents("php://input"), true);
         $query = 'INSERT INTO ' . OrderItem::getTableName() . ' (order_id, product_id, quantity, price) VALUES (:order_id, :product_id, :quantity, :price)';
 
         $stmt = $this->conn->prepare($query);
@@ -25,10 +25,10 @@ class OrderItemsController extends BaseController {
             $orderItemId = $this->conn->lastInsertId();
             $orderItem = $this->getOrderItem($orderItemId);
 
-            $this->sendResponse([
-                'message' => 'Order item created successfully',
-                'order_item' => $orderItem->getOrderItemDetails(),
-            ], 201);
+//            $this->sendResponse([
+//                'message' => 'Order item created successfully',
+//                'order_item' => $orderItem->getOrderItemDetails(),
+//            ], 201);
         } else {
             $this->sendError('Failed to create order item');
         }
