@@ -8,11 +8,11 @@ const AdminProducts: React.FC = () => {
     const navigate = useNavigate();
 
     const handleEdit = (productId: number) => {
-        navigate(`/admin/editProduct/${productId}`);
+        navigate(`/product/edit/${productId}`);
     };
 
     const handleDelete = async (productId: number) => {
-        await deleteProduct(productId);
+        await deleteProduct(productId.toString());
     };
 
     if (isLoading) return <div>Loading...</div>;
@@ -21,6 +21,16 @@ const AdminProducts: React.FC = () => {
     return (
         <div className="min-h-screen bg-gray-100 p-8">
             <h1 className="text-3xl font-bold mb-6">Admin Products</h1>
+
+            <div className={"w-full flex gap-4 my-6"}>
+                <input type={"text"} className={"flex-grow border h-full focus:outline-none px-6 py-3"} placeholder={"Search Product"} />
+
+                <button
+                    onClick={() => navigate('/product/add')}
+                    className={"px-6 py-3 bg-black text-white rounded-md"}
+                >Add Product</button>
+            </div>
+
             <div className="bg-white shadow-md rounded-lg p-6">
                 <table className="min-w-full bg-white">
                     <thead>
@@ -37,7 +47,7 @@ const AdminProducts: React.FC = () => {
                         <tr key={product.product_id}>
                             <td className="py-2 px-4 border-b">{product.product_name}</td>
                             <td className="py-2 px-4 border-b">{product.category_name}</td>
-                            <td className="py-2 px-4 border-b">${product.price}</td>
+                            <td className="py-2 px-4 border-b">₹ {product.price}</td>
                             <td className="py-2 px-4 border-b">{product.stock_quantity}</td>
                             <td className="py-2 px-4 border-b">
                                 <button

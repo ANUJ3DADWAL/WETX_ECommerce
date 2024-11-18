@@ -15,7 +15,7 @@ const adminApi = createApi({
 
         addProduct: builder.mutation<{message: string, product: Product}, Product>({
             query: (productDetails) => ({
-                url: '/product/addProduct',
+                url: '/product/createProduct',
                 method: 'POST',
                 body: productDetails,
             })

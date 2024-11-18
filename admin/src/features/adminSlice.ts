@@ -10,7 +10,7 @@ const initialState: AdminSliceState = {
 type UserSlicePayloadState = Omit<AdminSliceState, "isAuthenticated">;
 
 const adminSlice = createSlice({
-    name: 'user',
+    name: 'admin',
     initialState: initialState,
     reducers: {
         login: (state, action: PayloadAction<UserSlicePayloadState>) => {
