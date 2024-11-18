@@ -106,7 +106,7 @@ const Footer: React.FC = () => {
             </div>
 
             {/* Footer Bottom */}
-            <div className="container mx-auto px-16 py-5 border-t border-gray-700">
+            <div className="container mx-auto px-6 py-5 border-t border-gray-700">
                 <div className="flex flex-wrap justify-between items-center">
                     {/* Copyright */}
                     <div className="text-gray-400 text-sm">

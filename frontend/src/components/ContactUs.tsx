@@ -3,7 +3,7 @@ import React from "react";
 const ContactUs: React.FC = () => {
     return (
         <div>
-            <section className="text-white pt-24 pb-5 bg-slate-800 relative">
+            <section className="text-white flex flex-col items-center w-full pt-24 pb-5 bg-slate-800 relative">
                 {/* Custom Shape Divider */}
                 <div className="absolute top-0 left-0 w-full overflow-hidden leading-none">
                     <svg

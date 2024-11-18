@@ -39,7 +39,7 @@ const Carousel: React.FC = () => {
                             <p className="text-lg text-white mb-4">{slide.description}</p>
                             <button
                                 onClick={() => navigate(slide.navigation)}
-                                className="px-6 py-3 border mt-4 bg-slate-300 text-black hover:bg-white transition-ease-md cursor-pointer text-white rounded-lg z-99">
+                                className="px-6 py-3 border mt-4 bg-slate-300 text-black hover:bg-white transition-ease-md cursor-pointer rounded-lg z-99">
                                 {slide.buttonText}
                             </button>
 
