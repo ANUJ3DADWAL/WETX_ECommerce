@@ -77,9 +77,6 @@ Welcome to the **WETX E-Commerce** project! This repository contains the source 
 
 We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING.md) for more details.
 
-## 📄 License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
 
 ## 📧 Contact
 
