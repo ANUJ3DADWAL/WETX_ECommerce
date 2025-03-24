@@ -80,7 +80,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 
 ## 📧 Contact
 
-For any inquiries, please contact us at [wetx_industries@gmail.com](mailto:wetx_industries@gmail.com).
+For any inquiries, please contact us at [anuj3dadwal@gmail.com](mailto:anuj3dadwal@gmail.com).
 
 ---
 
